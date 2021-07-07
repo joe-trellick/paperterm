@@ -7,6 +7,12 @@ app.get('/', (req, res) => {
     res.send('Well done!');
 })
 
+app.get('/ls', (req, res) => {
+    child.exec("ls", (error, stdout, stderr) => {
+        res.send(stdout);
+    })
+})
+
 app.listen(3000, () => {
     console.log('The application is listening on port 3000');
 })
