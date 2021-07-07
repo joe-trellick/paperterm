@@ -3,6 +3,8 @@ import * as child from 'child_process';
 
 const app = express();
 
+app.use(express.static('public'));
+
 app.get('/', (req, res) => {
     res.send('Well done!');
 })
