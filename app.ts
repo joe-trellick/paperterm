@@ -12,8 +12,11 @@ app.post('/command', (req: express.Request, res: express.Response) => {
     console.log(`Got /command request: "${command}"`)
     var result: string;
     try {
-         // TODO: this is blocking, won't be any good for non-instant commands!
-        result = child.execSync(command).toString()
+        let options: child.ExecSyncOptionsWithBufferEncoding = {
+            stdio: 'pipe'  // This suppresses server console prints, per https://stackoverflow.com/questions/25340875/nodejs-child-process-exec-disable-printing-of-stdout-on-console/45578119
+        }
+        // TODO: this is blocking, won't be any good for non-instant commands!
+        result = child.execSync(command, options).toString()
     } catch (error) {
         result = error.stderr.toString()
     }
