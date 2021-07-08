@@ -4,6 +4,7 @@ import * as child from 'child_process';
 const app = express();
 
 app.use(express.static('public'));
+app.use(express.static('build/clientjs'));
 
 app.get('/', (req, res) => {
     res.send('Well done!');
