@@ -1,7 +1,6 @@
 console.log("main.ts is loaded");
 
 var inputField: HTMLInputElement;
-var outputField: HTMLTextAreaElement;
 var historyDiv: HTMLDivElement;
 
 // Wait for DOM and then attach handlers
@@ -18,7 +17,6 @@ function setupDOMElements() {
         }
     });
 
-    outputField = document.getElementById("output") as HTMLTextAreaElement
     historyDiv = document.getElementById("history") as HTMLDivElement
 }
 
@@ -35,7 +33,6 @@ function sendCommand() {
     .then((response) => response.json())
     .then((data) => {
         console.log(`Response: ${JSON.stringify(data)}`)
-        outputField.value = data.output
         if (data.command) {
             addCommandToHistory(data)
         }
