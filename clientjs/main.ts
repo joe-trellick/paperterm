@@ -17,7 +17,7 @@ function setupDOMElements() {
     inputField = document.getElementById("command") as HTMLInputElement;
     inputField.addEventListener("keyup", ({key}) => {
         if (key === "Enter") {
-            sendCommand();
+            sendCurrentInput();
         }
     });
 
@@ -35,8 +35,12 @@ function loadState() {
     })
 }
 
-function sendCommand() {
-    let input:string = inputField.value;
+function sendCurrentInput() {
+    let input: string = inputField.value
+    sendCommand(input)
+}
+
+function sendCommand(input: string) {
     console.log(`The input is "${input}"`);
     fetch('/command', {
         method: 'POST',
@@ -82,6 +86,14 @@ function removeHistoryEntry(entryDiv: HTMLDivElement) {
     entryDiv.remove()
 }
 
+function rerunHistoryEntry(entryDiv: HTMLDivElement) {
+    let commandDiv = entryDiv.querySelector('.historyCommand')
+    let commandText = commandDiv?.textContent?.substring(2)  // TODO: Use a real data representation here
+    if (commandText) {
+        sendCommand(commandText)
+    }
+}
+
 function addCommandToHistory(response: any) {
     let historyEntryDiv: HTMLDivElement = document.createElement("div")
     historyEntryDiv.className = "historyEntry"
@@ -116,6 +128,16 @@ function addCommandToHistory(response: any) {
         }
     })
 
+    let historyEntryRerunButton: HTMLDivElement = document.createElement("div")
+    historyEntryRerunButton.className = "historyEntryRerunButton"
+    historyEntryRerunButton.textContent = "rerun"
+    historyEntryRerunButton.addEventListener("click", () => {
+        let historyEntry = historyEntryTrashButton.closest('.historyEntry') as HTMLDivElement
+        if (historyEntry) {
+            rerunHistoryEntry(historyEntry)
+        }
+    })
+
     let historyEntryOutput: HTMLPreElement = document.createElement("pre")
     historyEntryOutput.className = "historyOutput"
     historyEntryOutput.textContent = response.output
@@ -124,6 +146,7 @@ function addCommandToHistory(response: any) {
     historyEntryTitlebarDiv.appendChild(historyEntryTitle)
     historyEntryTitlebarDiv.appendChild(historyEntryButtons)
     historyEntryButtons.appendChild(historyEntryCollapseButton)
+    historyEntryButtons.appendChild(historyEntryRerunButton)
     historyEntryButtons.appendChild(historyEntryTrashButton)
     historyEntryDiv.appendChild(historyEntryOutput)
 
