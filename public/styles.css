@@ -1,0 +1,12 @@
+.historyEntry {
+    background-color: #fafaeb;
+    padding: 1px 10px;
+    border-width: 1px;
+    border-color: gray;
+    border-style: solid;
+    margin-bottom: 5px;
+}
+
+.historyEntry:first-child {
+    background-color: #f7f77c;
+}

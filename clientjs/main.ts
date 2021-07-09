@@ -44,6 +44,7 @@ function sendCommand() {
 
 function addCommandToHistory(response: any) {
     let historyEntryDiv: HTMLDivElement = document.createElement("div")
+    historyEntryDiv.className = "historyEntry"
 
     let historyEntryTitle: HTMLParagraphElement = document.createElement("p")
     historyEntryTitle.textContent = `% ${response.command}`
