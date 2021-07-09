@@ -46,13 +46,27 @@ function addCommandToHistory(response: any) {
     let historyEntryDiv: HTMLDivElement = document.createElement("div")
     historyEntryDiv.className = "historyEntry"
 
-    let historyEntryTitle: HTMLParagraphElement = document.createElement("p")
+    let historyEntryTitlebarDiv: HTMLDivElement = document.createElement("div")
+    historyEntryTitlebarDiv.className = "historyEntryTitlebar"
+
+    let historyEntryTitle: HTMLDivElement = document.createElement("div")
+    historyEntryTitle.className = "historyCommand"
     historyEntryTitle.textContent = `% ${response.command}`
+
+    let historyEntryButtons: HTMLDivElement = document.createElement("div")
+    historyEntryButtons.className = "historyButtons"
+
+    let historyEntryCollapseButton: HTMLDivElement = document.createElement("div")
+    historyEntryCollapseButton.className = "historyEntryCollapseButton"
+    historyEntryCollapseButton.textContent = "collapse"
 
     let historyEntryOutput: HTMLPreElement = document.createElement("pre")
     historyEntryOutput.textContent = response.output
 
-    historyEntryDiv.appendChild(historyEntryTitle)
+    historyEntryDiv.appendChild(historyEntryTitlebarDiv)
+    historyEntryTitlebarDiv.appendChild(historyEntryTitle)
+    historyEntryTitlebarDiv.appendChild(historyEntryButtons)
+    historyEntryButtons.appendChild(historyEntryCollapseButton)
     historyEntryDiv.appendChild(historyEntryOutput)
     historyDiv.insertBefore(historyEntryDiv, historyDiv.children[0])
 }

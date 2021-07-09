@@ -1,6 +1,10 @@
+#history {
+    max-width: 600px;
+}
+
 .historyEntry {
     background-color: #fafaeb;
-    padding: 1px 10px;
+    padding: 10px;
     border-width: 1px;
     border-color: gray;
     border-style: solid;
@@ -9,4 +13,36 @@
 
 .historyEntry:first-child {
     background-color: #f7f77c;
+}
+
+.historyEntryTitlebar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.historyCommand {
+    font-family: "Courier New", monspace;
+    font-weight: bold;
+}
+
+.historyButtons {
+    margin-left: 5px;
+}
+
+.historyButtons div {
+    font-family: sans-serif;
+    font-size: 8pt;
+    border-style: dashed;
+    border-width: 1px;
+    padding: 2px;
+    user-select: none;
+}
+
+.historyButtons div:hover {
+    background-color: rgba(0,0,0,0.2);
+}
+
+.historyEntry pre {
+    white-space:pre-wrap;
+    margin-bottom: 0px;
 }
