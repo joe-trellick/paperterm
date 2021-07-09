@@ -78,6 +78,10 @@ function setHistoryEntryCollapsed(entryDiv: HTMLDivElement, collapsed: boolean) 
     }
 }
 
+function removeHistoryEntry(entryDiv: HTMLDivElement) {
+    entryDiv.remove()
+}
+
 function addCommandToHistory(response: any) {
     let historyEntryDiv: HTMLDivElement = document.createElement("div")
     historyEntryDiv.className = "historyEntry"
@@ -102,6 +106,16 @@ function addCommandToHistory(response: any) {
         }
     })
 
+    let historyEntryTrashButton: HTMLDivElement = document.createElement("div")
+    historyEntryTrashButton.className = "historyEntryTrashButton"
+    historyEntryTrashButton.textContent = "trash"
+    historyEntryTrashButton.addEventListener("click", () => {
+        let historyEntry = historyEntryTrashButton.closest('.historyEntry') as HTMLDivElement
+        if (historyEntry) {
+            removeHistoryEntry(historyEntry)
+        }
+    })
+
     let historyEntryOutput: HTMLPreElement = document.createElement("pre")
     historyEntryOutput.className = "historyOutput"
     historyEntryOutput.textContent = response.output
@@ -110,6 +124,7 @@ function addCommandToHistory(response: any) {
     historyEntryTitlebarDiv.appendChild(historyEntryTitle)
     historyEntryTitlebarDiv.appendChild(historyEntryButtons)
     historyEntryButtons.appendChild(historyEntryCollapseButton)
+    historyEntryButtons.appendChild(historyEntryTrashButton)
     historyEntryDiv.appendChild(historyEntryOutput)
 
     let previousEntry = historyDiv.children[0] as HTMLDivElement

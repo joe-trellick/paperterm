@@ -27,6 +27,8 @@
 
 .historyButtons {
     margin-left: 5px;
+    display: flex;
+    gap: 4px;
 }
 
 .historyButtons div {
@@ -36,6 +38,7 @@
     border-width: 1px;
     padding: 2px;
     user-select: none;
+    align-self: flex-start
 }
 
 .historyButtons div:hover {
