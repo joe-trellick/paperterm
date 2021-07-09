@@ -5,7 +5,8 @@ var historyDiv: HTMLDivElement;
 
 // Wait for DOM and then attach handlers
 document.addEventListener("DOMContentLoaded", () => {
-    setupDOMElements();
+    setupDOMElements()
+    loadState()
 });
 
 function setupDOMElements() {
@@ -18,6 +19,17 @@ function setupDOMElements() {
     });
 
     historyDiv = document.getElementById("history") as HTMLDivElement
+}
+
+function loadState() {
+    fetch('/state')
+    .then(response => response.json())
+    .then(data => {
+        let historyItems = data.history
+        historyItems.forEach((element: any) => {
+            addCommandToHistory(element)
+        });
+    })
 }
 
 function sendCommand() {

@@ -1,0 +1,9 @@
+{
+    "history": [
+        {"command":"snorg","output":"/bin/sh: snorg: command not found\n"},
+        {"command":"say \"INT. JUPYTER NOTEBOOK\"","output":""},
+        {"command":"ps | grep app.js","output":"70837 ttys015    0:00.17 node build/app.js\n70839 ttys015    0:00.00 /bin/sh -c ps | grep app.js\n70841 ttys015    0:00.00 grep app.js\n"},
+        {"command":"here's a command that's a very long command and it's very very very long","output":"/bin/sh: -c: line 0: unexpected EOF while looking for matching `''\n/bin/sh: -c: line 1: syntax error: unexpected end of file\n"},
+        {"command":"ls -la","output":"total 136\ndrwxr-xr-x  12 trellick  staff    384 Jul  7 20:47 .\ndrwxr-xr-x  14 trellick  staff    448 Jul  7 19:27 ..\ndrwxr-xr-x  12 trellick  staff    384 Jul  9 10:02 .git\n-rw-r--r--   1 trellick  staff     28 Jul  7 20:16 .gitignore\n-rw-r--r--   1 trellick  staff   1115 Jul  8 20:34 app.ts\ndrwxr-xr-x   4 trellick  staff    128 Jul  7 20:49 build\ndrwxr-xr-x   3 trellick  staff     96 Jul  7 20:49 clientjs\ndrwxr-xr-x  65 trellick  staff   2080 Jul  7 19:28 node_modules\n-rw-r--r--   1 trellick  staff  47487 Jul  7 19:28 package-lock.json\n-rw-r--r--   1 trellick  staff    489 Jul  7 19:43 package.json\ndrwxr-xr-x   4 trellick  staff    128 Jul  9 09:50 public\n-rw-r--r--   1 trellick  staff   6792 Jul  7 19:37 tsconfig.json\n"}
+    ]
+}

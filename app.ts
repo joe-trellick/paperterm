@@ -1,5 +1,6 @@
 import express from 'express';
 import * as child from 'child_process';
+import { readFileSync } from 'fs';
 
 const app = express();
 
@@ -23,6 +24,11 @@ app.post('/command', (req: express.Request, res: express.Response) => {
     let responseObject = {command: command, output: result}
     res.send(JSON.stringify(responseObject));
     console.log(`Result is: "${result}"\n`);
+})
+
+app.get('/state', (req: express.Request, res: express.Response) => {
+    let fakeState = readFileSync('fake-state.json')
+    res.send(fakeState)
 })
 
 app.listen(3000, () => {
