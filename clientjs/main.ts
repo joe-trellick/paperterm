@@ -37,6 +37,7 @@ function loadState() {
 
 function sendCurrentInput() {
     let input: string = inputField.value
+    inputField.value = ''
     sendCommand(input)
 }
 
@@ -91,6 +92,7 @@ function rerunHistoryEntry(entryDiv: HTMLDivElement) {
     let commandText = commandDiv?.textContent?.substring(2)  // TODO: Use a real data representation here
     if (commandText) {
         sendCommand(commandText)
+        inputField.value = commandText
     }
 }
 
