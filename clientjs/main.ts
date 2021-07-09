@@ -3,6 +3,9 @@ console.log("main.ts is loaded");
 var inputField: HTMLInputElement;
 var historyDiv: HTMLDivElement;
 
+const collapseLabel: string = 'collapse'
+const expandLabel: string = 'expand'
+
 // Wait for DOM and then attach handlers
 document.addEventListener("DOMContentLoaded", () => {
     setupDOMElements()
@@ -54,6 +57,27 @@ function sendCommand() {
     });
 }
 
+function isHistoryEntryCollapsed(entryDiv: HTMLDivElement) {
+    let outputDiv = outputDivForHistoryEntry(entryDiv)
+    return outputDiv.style.display == 'none'
+}
+
+function outputDivForHistoryEntry(entryDiv: HTMLDivElement) {
+    return entryDiv.querySelector('.historyOutput') as HTMLDivElement
+}
+
+function setHistoryEntryCollapsed(entryDiv: HTMLDivElement, collapsed: boolean) {
+    let outputDiv = outputDivForHistoryEntry(entryDiv)
+    if (outputDiv) {
+        outputDiv.style.display = collapsed ? 'none' : 'block'
+    }
+
+    let buttonDiv = entryDiv.querySelector('.historyEntryCollapseButton')
+    if (buttonDiv) {
+        buttonDiv.textContent = collapsed ? expandLabel : collapseLabel
+    }
+}
+
 function addCommandToHistory(response: any) {
     let historyEntryDiv: HTMLDivElement = document.createElement("div")
     historyEntryDiv.className = "historyEntry"
@@ -70,9 +94,16 @@ function addCommandToHistory(response: any) {
 
     let historyEntryCollapseButton: HTMLDivElement = document.createElement("div")
     historyEntryCollapseButton.className = "historyEntryCollapseButton"
-    historyEntryCollapseButton.textContent = "collapse"
+    historyEntryCollapseButton.textContent = collapseLabel
+    historyEntryCollapseButton.addEventListener("click", () => {
+        let historyEntry = historyEntryCollapseButton.closest('.historyEntry') as HTMLDivElement
+        if (historyEntry) {
+            setHistoryEntryCollapsed(historyEntry, !isHistoryEntryCollapsed(historyEntry))
+        }
+    })
 
     let historyEntryOutput: HTMLPreElement = document.createElement("pre")
+    historyEntryOutput.className = "historyOutput"
     historyEntryOutput.textContent = response.output
 
     historyEntryDiv.appendChild(historyEntryTitlebarDiv)
@@ -80,5 +111,10 @@ function addCommandToHistory(response: any) {
     historyEntryTitlebarDiv.appendChild(historyEntryButtons)
     historyEntryButtons.appendChild(historyEntryCollapseButton)
     historyEntryDiv.appendChild(historyEntryOutput)
-    historyDiv.insertBefore(historyEntryDiv, historyDiv.children[0])
+
+    let previousEntry = historyDiv.children[0] as HTMLDivElement
+    if (previousEntry) {
+        setHistoryEntryCollapsed(previousEntry, true)
+    }
+    historyDiv.insertBefore(historyEntryDiv, previousEntry)
 }
