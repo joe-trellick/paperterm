@@ -11,7 +11,7 @@
     margin-bottom: 5px;
 }
 
-.historyEntry:first-child {
+#history > .historyEntry:first-child {
     background-color: #f7f77c;
 }
 
@@ -48,4 +48,20 @@
 .historyEntry pre {
     white-space:pre-wrap;
     margin-bottom: 0px;
+}
+
+#main {
+    margin-right: 350px;
+}
+
+#pinbar {
+    height: 100%;
+    width: 350px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    overflow-x: hidden;
+    padding-top: 5px;
+    padding-right: 5px;
 }

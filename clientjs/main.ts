@@ -87,6 +87,44 @@ function removeHistoryEntry(entryDiv: HTMLDivElement) {
     entryDiv.remove()
 }
 
+function pinHistoryEntry(entryDiv: HTMLDivElement) {
+    let pinbarDiv = document.getElementById("pinbar") as HTMLDivElement
+    let pinnedEntryDiv = entryDiv.cloneNode(true) as HTMLDivElement
+
+    // Attach listeners
+    let historyEntryCollapseButton = pinnedEntryDiv.querySelector('.historyEntryCollapseButton')
+    historyEntryCollapseButton?.addEventListener("click", () => {
+        let historyEntry = historyEntryCollapseButton?.closest('.historyEntry') as HTMLDivElement
+        if (historyEntry) {
+            setHistoryEntryCollapsed(historyEntry, !isHistoryEntryCollapsed(historyEntry))
+        }
+    })
+
+    let historyEntryRerunButton = pinnedEntryDiv.querySelector('.historyEntryRerunButton')
+    historyEntryRerunButton?.addEventListener("click", () => {
+        let historyEntry = historyEntryRerunButton?.closest('.historyEntry') as HTMLDivElement
+        if (historyEntry) {
+            rerunHistoryEntry(historyEntry)
+        }
+    })
+
+    let historyEntryPinButton = pinnedEntryDiv.querySelector('.historyEntryPinButton')
+    if (historyEntryPinButton) {
+        historyEntryPinButton.textContent = "unpin"
+    }
+    historyEntryPinButton?.addEventListener("click", () => {
+        let historyEntry = historyEntryPinButton?.closest('.historyEntry') as HTMLDivElement
+        if (historyEntry) {
+            removeHistoryEntry(historyEntry)
+        }
+    })
+    
+    let historyEntryTrashButton = pinnedEntryDiv.querySelector('.historyEntryTrashButton')
+    historyEntryTrashButton?.remove()
+
+    pinbarDiv.insertBefore(pinnedEntryDiv, pinbarDiv.children[0])
+}
+
 function rerunHistoryEntry(entryDiv: HTMLDivElement) {
     let commandDiv = entryDiv.querySelector('.historyCommand')
     let commandText = commandDiv?.textContent?.substring(2)  // TODO: Use a real data representation here
@@ -140,7 +178,17 @@ function addCommandToHistory(response: any) {
         }
     })
 
-    let historyEntryOutput: HTMLPreElement = document.createElement("pre")
+    let historyEntryPinButton: HTMLDivElement = document.createElement("div")
+    historyEntryPinButton.className = "historyEntryPinButton"
+    historyEntryPinButton.textContent = "pin"
+    historyEntryPinButton.addEventListener("click", () => {
+        let historyEntry = historyEntryPinButton.closest('.historyEntry') as HTMLDivElement
+        if (historyEntry) {
+            pinHistoryEntry(historyEntry)
+        }
+    })
+
+   let historyEntryOutput: HTMLPreElement = document.createElement("pre")
     historyEntryOutput.className = "historyOutput"
     historyEntryOutput.textContent = response.output
 
@@ -149,6 +197,7 @@ function addCommandToHistory(response: any) {
     historyEntryTitlebarDiv.appendChild(historyEntryButtons)
     historyEntryButtons.appendChild(historyEntryCollapseButton)
     historyEntryButtons.appendChild(historyEntryRerunButton)
+    historyEntryButtons.appendChild(historyEntryPinButton)
     historyEntryButtons.appendChild(historyEntryTrashButton)
     historyEntryDiv.appendChild(historyEntryOutput)
 
