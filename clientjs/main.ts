@@ -1,6 +1,7 @@
 console.log("main.ts is loaded");
 
 import WebSocket from 'isomorphic-ws'
+import { parse } from 'uuid';
 
 var inputField: HTMLInputElement;
 var historyDiv: HTMLDivElement;
@@ -72,15 +73,30 @@ function sendCommandByWebSocket(input: string) {
     ws = new WebSocket('ws://localhost:3000')
     ws.onmessage = function message(event: WebSocket.MessageEvent) {
         if (event.data) {
+            var parsedMessage
             try {
-                let parsedMessage = JSON.parse(event.data.toString())
-                if (parsedMessage.command) {
-                    console.log(`Response: ${JSON.stringify(parsedMessage)}`)
-                    addCommandToHistory(parsedMessage)
-                }    
+                parsedMessage = JSON.parse(event.data.toString())
             } catch (error) {
                 console.log("Received unknown message", event.data)
             }
+            if (parsedMessage.command) {
+                console.log(`Response: ${JSON.stringify(parsedMessage)}`)
+                switch (parsedMessage.status) {
+                    case "start":
+                        addCommandToHistory(parsedMessage)
+                        break;
+                    
+                    case "continue":
+                        continueCommand(parsedMessage)
+                        break;
+
+                    case "end":
+                        break;
+
+                    default:
+                        console.log("Unknown status", parsedMessage.status)
+                }
+            }    
         }
     }
 
@@ -163,9 +179,28 @@ function rerunHistoryEntry(entryDiv: HTMLDivElement) {
     }
 }
 
+function findHistoryDivForHistoryId(historyId: string): HTMLDivElement | undefined {
+    const div = document.querySelector(`[data-history-id="${historyId}"]`) as HTMLDivElement
+    return div
+}
+
+function continueCommand(response: any) {
+    let historyId = response.historyId
+    let entryDiv = findHistoryDivForHistoryId(historyId)
+    if (entryDiv) {
+        let outputDiv = outputDivForHistoryEntry(entryDiv)
+        if (outputDiv) {
+            outputDiv.textContent = outputDiv.textContent + response.output
+        }
+    }
+}
+
 function addCommandToHistory(response: any) {
     let historyEntryDiv: HTMLDivElement = document.createElement("div")
     historyEntryDiv.className = "historyEntry"
+    if (response.historyId) {
+        historyEntryDiv.dataset.historyId = response.historyId
+    }
 
     let historyEntryTitlebarDiv: HTMLDivElement = document.createElement("div")
     historyEntryTitlebarDiv.className = "historyEntryTitlebar"

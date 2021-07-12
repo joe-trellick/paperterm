@@ -46,19 +46,31 @@ wss.on('connection', (ws: WebSocket) => {
         if (request.command) {
             console.log('got command', request.command)
             let command = request.command
+            let historyId = uuidv4()
             var result: string;
             try {
                 let options: child.ExecSyncOptionsWithBufferEncoding = {
                     stdio: 'pipe'  // This suppresses server console prints, per https://stackoverflow.com/questions/25340875/nodejs-child-process-exec-disable-printing-of-stdout-on-console/45578119
                 }
                 // TODO: this is blocking, won't be any good for non-instant commands!
-                result = child.execSync(command, options).toString()
+                ws.send(JSON.stringify({status: "start", command: command, historyId: historyId, output: ""}))
+
+                let runningCommand = child.exec(command, options)
+                runningCommand.stdout?.on('data', (data: any) => {
+                    console.log("Got data output", data.toString())
+                    ws.send(JSON.stringify({status: "continue", command: command, historyId: historyId, output: data.toString()}))
+                })
+                runningCommand.stdout?.on('end', (code: any) => {
+                    console.log(`Got command end: "${code}"`)
+                    ws.send(JSON.stringify({status: "end", command: command, historyId: historyId,}))
+                })
+
+                //result = child.execSync(command, options).toString()
             } catch (error) {
                 result = error.stderr.toString()
+                let responseObject = {command: command, historyId: historyId, output: result}
+                ws.send(JSON.stringify(responseObject));
             }
-            let historyId = uuidv4()
-            let responseObject = {command: command, historyId: historyId, output: result}
-            ws.send(JSON.stringify(responseObject));
         }
     })
 
