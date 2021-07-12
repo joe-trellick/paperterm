@@ -3,6 +3,7 @@ import * as child from 'child_process'
 import { readFileSync } from 'fs'
 import * as WebSocket from 'ws'
 import * as http from 'http'
+import {v4 as uuidv4} from 'uuid'
 
 const app = express();
 
@@ -55,7 +56,8 @@ wss.on('connection', (ws: WebSocket) => {
             } catch (error) {
                 result = error.stderr.toString()
             }
-            let responseObject = {command: command, output: result}
+            let historyId = uuidv4()
+            let responseObject = {command: command, historyId: historyId, output: result}
             ws.send(JSON.stringify(responseObject));
         }
     })
