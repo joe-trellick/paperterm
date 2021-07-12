@@ -40,7 +40,7 @@ function loadState() {
 function sendCurrentInput() {
     let input: string = inputField.value
     inputField.value = ''
-    sendCommand(input)
+    sendCommandByWebSocket(input)
 }
 
 function sendCommand(input: string) {
@@ -64,12 +64,31 @@ function sendCommand(input: string) {
     });
 }
 
-// TODO: Replace this with a real websocket setup, this is just testing the library
-const ws = new WebSocket('ws://localhost:3000')
+var ws: WebSocket
+function sendCommandByWebSocket(input: string) {
+    if (ws) {
+        ws.close()
+    }
+    ws = new WebSocket('ws://localhost:3000')
+    ws.onmessage = function message(event: WebSocket.MessageEvent) {
+        if (event.data) {
+            try {
+                let parsedMessage = JSON.parse(event.data.toString())
+                if (parsedMessage.command) {
+                    console.log(`Response: ${JSON.stringify(parsedMessage)}`)
+                    addCommandToHistory(parsedMessage)
+                }    
+            } catch (error) {
+                console.log("Received unknown message", event.data)
+            }
+        }
+    }
 
-ws.onopen = function open() {
-    console.log('Test websocket connected')
-    ws.send('Hello from test websocket client')
+    ws.onopen = function open() {
+        console.log('Websocket connected')
+        let body = JSON.stringify({command: input})
+        ws.send(body)
+    }
 }
 
 function isHistoryEntryCollapsed(entryDiv: HTMLDivElement) {

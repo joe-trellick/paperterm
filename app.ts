@@ -37,12 +37,32 @@ const server = http.createServer(app)
 const wss = new WebSocket.Server({ server })
 
 wss.on('connection', (ws: WebSocket) => {
+    console.log('websocket connected')
+
     ws.on('message', (message: string) => {
         console.log(`received: ${message}`)
-        ws.send(`Hello, you sent -> ${message}`)
+        let request = JSON.parse(message)
+        if (request.command) {
+            console.log('got command', request.command)
+            let command = request.command
+            var result: string;
+            try {
+                let options: child.ExecSyncOptionsWithBufferEncoding = {
+                    stdio: 'pipe'  // This suppresses server console prints, per https://stackoverflow.com/questions/25340875/nodejs-child-process-exec-disable-printing-of-stdout-on-console/45578119
+                }
+                // TODO: this is blocking, won't be any good for non-instant commands!
+                result = child.execSync(command, options).toString()
+            } catch (error) {
+                result = error.stderr.toString()
+            }
+            let responseObject = {command: command, output: result}
+            ws.send(JSON.stringify(responseObject));
+        }
     })
 
-    ws.send('Hello from WebSocket server')
+    ws.on('close', () => {
+        console.log('websocket closed')
+    })
 })
 
 server.listen(3000, () => {
