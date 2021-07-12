@@ -1,6 +1,8 @@
-import express from 'express';
-import * as child from 'child_process';
-import { readFileSync } from 'fs';
+import express from 'express'
+import * as child from 'child_process'
+import { readFileSync } from 'fs'
+import * as WebSocket from 'ws'
+import * as http from 'http'
 
 const app = express();
 
@@ -31,6 +33,18 @@ app.get('/state', (req: express.Request, res: express.Response) => {
     res.send(fakeState)
 })
 
-app.listen(3000, () => {
+const server = http.createServer(app)
+const wss = new WebSocket.Server({ server })
+
+wss.on('connection', (ws: WebSocket) => {
+    ws.on('message', (message: string) => {
+        console.log(`received: ${message}`)
+        ws.send(`Hello, you sent -> ${message}`)
+    })
+
+    ws.send('Hello from WebSocket server')
+})
+
+server.listen(3000, () => {
     console.log('The application is listening on port 3000');
 })
