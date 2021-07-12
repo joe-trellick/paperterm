@@ -1,5 +1,7 @@
 console.log("main.ts is loaded");
 
+import WebSocket from 'isomorphic-ws'
+
 var inputField: HTMLInputElement;
 var historyDiv: HTMLDivElement;
 
@@ -60,6 +62,14 @@ function sendCommand(input: string) {
     .catch((error) => {
         console.error('Error:', error)
     });
+}
+
+// TODO: Replace this with a real websocket setup, this is just testing the library
+const ws = new WebSocket('ws://localhost:3000')
+
+ws.onopen = function open() {
+    console.log('Test websocket connected')
+    ws.send('Hello from test websocket client')
 }
 
 function isHistoryEntryCollapsed(entryDiv: HTMLDivElement) {
