@@ -109,7 +109,7 @@ function sendCommandByWebSocket(input: string) {
 
     ws.onopen = function open() {
         console.log('Websocket connected')
-        let body = JSON.stringify({command: input})
+        let body = JSON.stringify({action: "start", command: input})
         ws.send(body)
     }
 }
@@ -245,7 +245,11 @@ function updateHistoryEntryOnCommandEnd(entryDiv: HTMLDivElement) {
 }
 
 function stopHistoryEntry(entryDiv: HTMLDivElement) {
-    console.log("TODO: Implement stop button")
+    // TODO: Deal with multiple simultaneous commands
+    if (ws) {
+        let body = JSON.stringify({action: "stop", historyId: entryDiv.dataset.historyId})
+        ws.send(body)
+    }
 }
 
 function addCommandToHistory(response: any, status: string) {

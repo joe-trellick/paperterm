@@ -4,6 +4,7 @@ import { readFileSync } from 'fs'
 import * as WebSocket from 'ws'
 import * as http from 'http'
 import {v4 as uuidv4} from 'uuid'
+import { SIGINT } from 'constants'
 
 const app = express()
 
@@ -36,6 +37,7 @@ app.get('/state', (req: express.Request, res: express.Response) => {
 
 const server = http.createServer(app)
 const wss = new WebSocket.Server({ server })
+var runningCommand: child.ChildProcess
 
 wss.on('connection', (ws: WebSocket) => {
     console.log('websocket connected')
@@ -45,6 +47,11 @@ wss.on('connection', (ws: WebSocket) => {
         let request = JSON.parse(message)
         if (request.command) {
             console.log('got command', request.command)
+            // Right now we only support one command, so kill any running one
+            // This will actually kill the old one, but not send the end message to client
+            if (runningCommand) {
+                runningCommand.kill(SIGINT)
+            }
             let command = request.command
             let historyId = uuidv4()
             var result: string
@@ -55,7 +62,7 @@ wss.on('connection', (ws: WebSocket) => {
                 // TODO: this is blocking, won't be any good for non-instant commands!
                 ws.send(JSON.stringify({status: "start", command: command, historyId: historyId, output: ""}))
 
-                let runningCommand = child.exec(command, options)
+                runningCommand = child.exec(command, options)
                 runningCommand.stdout?.on('data', (data: any) => {
                     console.log("Got data output", data.toString())
                     ws.send(JSON.stringify({status: "continue", command: command, historyId: historyId, output: data.toString()}))
@@ -70,6 +77,11 @@ wss.on('connection', (ws: WebSocket) => {
                 result = error.stderr.toString()
                 let responseObject = {command: command, historyId: historyId, output: result}
                 ws.send(JSON.stringify(responseObject))
+            }
+        } else if (request.action == "stop") {
+            console.log('got stop request', request)
+            if (runningCommand) {
+                runningCommand.kill(SIGINT)
             }
         }
     })
