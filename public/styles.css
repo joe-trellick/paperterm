@@ -47,7 +47,9 @@
 
 .historyEntry pre {
     white-space:pre-wrap;
+    word-break:break-all;
     margin-bottom: 0px;
+    font-size: 9pt;
 }
 
 #main {
