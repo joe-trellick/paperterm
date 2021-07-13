@@ -3,8 +3,9 @@ console.log("main.ts is loaded");
 import WebSocket from 'isomorphic-ws'
 import { parse } from 'uuid';
 
-var inputField: HTMLInputElement;
-var historyDiv: HTMLDivElement;
+var inputField: HTMLInputElement
+var historyDiv: HTMLDivElement
+var pinbarDiv: HTMLDivElement
 
 const collapseLabel: string = 'collapse'
 const expandLabel: string = 'expand'
@@ -25,6 +26,7 @@ function setupDOMElements() {
     });
 
     historyDiv = document.getElementById("history") as HTMLDivElement
+    pinbarDiv = document.getElementById("pinbar") as HTMLDivElement
 }
 
 function loadState() {
@@ -183,7 +185,12 @@ function rerunHistoryEntry(entryDiv: HTMLDivElement) {
 }
 
 function findHistoryDivForHistoryId(historyId: string): HTMLDivElement | undefined {
-    const div = document.querySelector(`[data-history-id="${historyId}"]`) as HTMLDivElement
+    const div = historyDiv.querySelector(`[data-history-id="${historyId}"]`) as HTMLDivElement
+    return div
+}
+
+function findPinbarDivForHistoryId(historyId: string): HTMLDivElement | undefined {
+    const div = pinbarDiv.querySelector(`[data-history-id="${historyId}"]`) as HTMLDivElement
     return div
 }
 
@@ -192,6 +199,10 @@ function continueCommand(response: any) {
     let historyEntryDiv = findHistoryDivForHistoryId(historyId)
     if (historyEntryDiv) {
         appendOutputToEntryDiv(historyEntryDiv, response.output)
+    }
+    let pinbarEntryDiv = findPinbarDivForHistoryId(historyId)
+    if (pinbarEntryDiv) {
+        appendOutputToEntryDiv(pinbarEntryDiv, response.output)
     }
 }
 
