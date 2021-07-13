@@ -49,6 +49,10 @@ wss.on('connection', (ws: WebSocket) => {
                     console.log("Got data output", data.toString())
                     ws.send(JSON.stringify({status: "continue", command: command, historyId: historyId, output: data.toString()}))
                 })
+                runningCommand.stderr?.on('data', (data: any) => {
+                    console.log("Got error output", data.toString())
+                    ws.send(JSON.stringify({status: "continue", command: command, historyId: historyId, output: data.toString()}))
+                })
                 runningCommand.stdout?.on('end', (code: any) => {
                     console.log(`Got command end: "${code}"`)
                     ws.send(JSON.stringify({status: "end", command: command, historyId: historyId,}))
