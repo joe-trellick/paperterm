@@ -189,17 +189,21 @@ function findHistoryDivForHistoryId(historyId: string): HTMLDivElement | undefin
 
 function continueCommand(response: any) {
     let historyId = response.historyId
-    let entryDiv = findHistoryDivForHistoryId(historyId)
-    if (entryDiv) {
-        let outputPre = outputPreForHistoryEntry(entryDiv)
-        if (outputPre) {
-            outputPre.textContent = outputPre.textContent + response.output
-            // Make sure to scroll to show added stuff
-            // TODO: Make this more nuanced to not do this if the user has scrolled back up?
-            let outputDiv = outputDivForHistoryEntry(entryDiv)
-            if (outputDiv) {
-                outputDiv.scrollTop = outputDiv.scrollHeight
-            }
+    let historyEntryDiv = findHistoryDivForHistoryId(historyId)
+    if (historyEntryDiv) {
+        appendOutputToEntryDiv(historyEntryDiv, response.output)
+    }
+}
+
+function appendOutputToEntryDiv(entryDiv: HTMLDivElement, continuedOutput: string) {
+    let outputPre = outputPreForHistoryEntry(entryDiv)
+    if (outputPre) {
+        outputPre.textContent = outputPre.textContent + continuedOutput
+        // Make sure to scroll to show added stuff
+        // TODO: Make this more nuanced to not do this if the user has scrolled back up?
+        let outputDiv = outputDivForHistoryEntry(entryDiv)
+        if (outputDiv) {
+            outputDiv.scrollTop = outputDiv.scrollHeight
         }
     }
 }
