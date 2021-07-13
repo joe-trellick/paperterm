@@ -35,7 +35,7 @@ function loadState() {
     .then(data => {
         let historyItems = data.history
         historyItems.forEach((element: any) => {
-            addCommandToHistory(element)
+            addCommandToHistory(element, "end")
         });
     })
 }
@@ -63,7 +63,7 @@ function sendCommand(input: string) {
     .then((data) => {
         console.log(`Response: ${JSON.stringify(data)}`)
         if (data.command) {
-            addCommandToHistory(data)
+            addCommandToHistory(data, "end")
         }
     })
     .catch((error) => {
@@ -89,7 +89,7 @@ function sendCommandByWebSocket(input: string) {
                 console.log(`Response: ${JSON.stringify(parsedMessage)}`)
                 switch (parsedMessage.status) {
                     case "start":
-                        addCommandToHistory(parsedMessage)
+                        addCommandToHistory(parsedMessage, "start")
                         break;
                     
                     case "continue":
@@ -97,6 +97,7 @@ function sendCommandByWebSocket(input: string) {
                         break;
 
                     case "end":
+                        endCommand(parsedMessage)
                         break;
 
                     default:
@@ -223,7 +224,30 @@ function appendOutputToEntryDiv(entryDiv: HTMLDivElement, continuedOutput: strin
     }
 }
 
-function addCommandToHistory(response: any) {
+function endCommand(response: any) {
+    let historyId = response.historyId
+    let historyEntryDiv = findHistoryDivForHistoryId(historyId)
+    if (historyEntryDiv) {
+        updateHistoryEntryOnCommandEnd(historyEntryDiv)
+    }
+    let pinbarEntryDiv = findPinbarDivForHistoryId(historyId)
+    if (pinbarEntryDiv) {
+        updateHistoryEntryOnCommandEnd(pinbarEntryDiv)
+    }
+}
+
+function updateHistoryEntryOnCommandEnd(entryDiv: HTMLDivElement) {
+    let buttonDiv = entryDiv.querySelector('.historyEntryStopButton') as HTMLDivElement
+    if (buttonDiv) {
+        buttonDiv.style.display = "none"
+    }
+}
+
+function stopHistoryEntry(entryDiv: HTMLDivElement) {
+    console.log("TODO: Implement stop button")
+}
+
+function addCommandToHistory(response: any, status: string) {
     let historyEntryDiv: HTMLDivElement = document.createElement("div")
     historyEntryDiv.className = "historyEntry"
     if (response.historyId) {
@@ -280,6 +304,19 @@ function addCommandToHistory(response: any) {
         }
     })
 
+    let stopButton: HTMLDivElement = document.createElement("div")
+    stopButton.className = "historyEntryStopButton"
+    stopButton.textContent = "stop"
+    if (status == "end") {
+        stopButton.style.display = "none"
+    }
+    stopButton.addEventListener("click", () => {
+        let historyEntry = historyEntryPinButton.closest('.historyEntry') as HTMLDivElement
+        if (historyEntry) {
+            stopHistoryEntry(historyEntry)
+        }
+    })
+
     let historyEntryOutput: HTMLDivElement = document.createElement("div")
     historyEntryOutput.className = "historyOutput"
 
@@ -290,6 +327,7 @@ function addCommandToHistory(response: any) {
     historyEntryDiv.appendChild(historyEntryTitlebarDiv)
     historyEntryTitlebarDiv.appendChild(historyEntryTitle)
     historyEntryTitlebarDiv.appendChild(historyEntryButtons)
+    historyEntryButtons.appendChild(stopButton)
     historyEntryButtons.appendChild(historyEntryCollapseButton)
     historyEntryButtons.appendChild(historyEntryRerunButton)
     historyEntryButtons.appendChild(historyEntryPinButton)
