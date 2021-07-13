@@ -5,16 +5,16 @@ import * as WebSocket from 'ws'
 import * as http from 'http'
 import {v4 as uuidv4} from 'uuid'
 
-const app = express();
+const app = express()
 
-app.use(express.json());
-app.use(express.static('public'));
-app.use(express.static('build/clientjs'));
+app.use(express.json())
+app.use(express.static('public'))
+app.use(express.static('build/clientjs'))
 
 app.post('/command', (req: express.Request, res: express.Response) => {
     let command = req.body.command
     console.log(`Got /command request: "${command}"`)
-    var result: string;
+    var result: string
     try {
         let options: child.ExecSyncOptionsWithBufferEncoding = {
             stdio: 'pipe'  // This suppresses server console prints, per https://stackoverflow.com/questions/25340875/nodejs-child-process-exec-disable-printing-of-stdout-on-console/45578119
@@ -25,8 +25,8 @@ app.post('/command', (req: express.Request, res: express.Response) => {
         result = error.stderr.toString()
     }
     let responseObject = {command: command, output: result}
-    res.send(JSON.stringify(responseObject));
-    console.log(`Result is: "${result}"\n`);
+    res.send(JSON.stringify(responseObject))
+    console.log(`Result is: "${result}"\n`)
 })
 
 app.get('/state', (req: express.Request, res: express.Response) => {
@@ -47,7 +47,7 @@ wss.on('connection', (ws: WebSocket) => {
             console.log('got command', request.command)
             let command = request.command
             let historyId = uuidv4()
-            var result: string;
+            var result: string
             try {
                 let options: child.ExecSyncOptionsWithBufferEncoding = {
                     stdio: 'pipe'  // This suppresses server console prints, per https://stackoverflow.com/questions/25340875/nodejs-child-process-exec-disable-printing-of-stdout-on-console/45578119
@@ -69,7 +69,7 @@ wss.on('connection', (ws: WebSocket) => {
             } catch (error) {
                 result = error.stderr.toString()
                 let responseObject = {command: command, historyId: historyId, output: result}
-                ws.send(JSON.stringify(responseObject));
+                ws.send(JSON.stringify(responseObject))
             }
         }
     })
@@ -80,5 +80,5 @@ wss.on('connection', (ws: WebSocket) => {
 })
 
 server.listen(3000, () => {
-    console.log('The application is listening on port 3000');
+    console.log('The application is listening on port 3000')
 })

@@ -1,7 +1,7 @@
-console.log("main.ts is loaded");
+console.log("main.ts is loaded")
 
 import WebSocket from 'isomorphic-ws'
-import { parse } from 'uuid';
+import { parse } from 'uuid'
 
 var inputField: HTMLInputElement
 var historyDiv: HTMLDivElement
@@ -14,16 +14,16 @@ const expandLabel: string = 'expand'
 document.addEventListener("DOMContentLoaded", () => {
     setupDOMElements()
     loadState()
-});
+})
 
 function setupDOMElements() {
     // Add return key support for input
-    inputField = document.getElementById("command") as HTMLInputElement;
+    inputField = document.getElementById("command") as HTMLInputElement
     inputField.addEventListener("keyup", ({key}) => {
         if (key === "Enter") {
-            sendCurrentInput();
+            sendCurrentInput()
         }
-    });
+    })
 
     historyDiv = document.getElementById("history") as HTMLDivElement
     pinbarDiv = document.getElementById("pinbar") as HTMLDivElement
@@ -36,7 +36,7 @@ function loadState() {
         let historyItems = data.history
         historyItems.forEach((element: any) => {
             addCommandToHistory(element, "end")
-        });
+        })
     })
 }
 
@@ -51,7 +51,7 @@ function sendCurrentInput() {
 (window as any).sendCurrentInput = sendCurrentInput
 
 function sendCommand(input: string) {
-    console.log(`The input is "${input}"`);
+    console.log(`The input is "${input}"`)
     fetch('/command', {
         method: 'POST',
         headers: {
@@ -68,7 +68,7 @@ function sendCommand(input: string) {
     })
     .catch((error) => {
         console.error('Error:', error)
-    });
+    })
 }
 
 var ws: WebSocket
@@ -90,15 +90,15 @@ function sendCommandByWebSocket(input: string) {
                 switch (parsedMessage.status) {
                     case "start":
                         addCommandToHistory(parsedMessage, "start")
-                        break;
+                        break
                     
                     case "continue":
                         continueCommand(parsedMessage)
-                        break;
+                        break
 
                     case "end":
                         endCommand(parsedMessage)
-                        break;
+                        break
 
                     default:
                         console.log("Unknown status", parsedMessage.status)
