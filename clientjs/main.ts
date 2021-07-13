@@ -194,11 +194,19 @@ function appendOutputToEntryDiv(entryDiv: HTMLDivElement, continuedOutput: strin
     let outputPre = outputPreForHistoryEntry(entryDiv)
     if (outputPre) {
         outputPre.textContent = outputPre.textContent + continuedOutput
+        let hasOutput = outputPre.textContent.length > 0
         // Make sure to scroll to show added stuff
         // TODO: Make this more nuanced to not do this if the user has scrolled back up?
         let outputDiv = outputDivForHistoryEntry(entryDiv)
         if (outputDiv) {
+            if (hasOutput) {
+                outputDiv.style.display = "block"
+            }
             outputDiv.scrollTop = outputDiv.scrollHeight
+        }
+        let historyEntryCollapseButton = entryDiv.querySelector('.historyEntryCollapseButton') as HTMLDivElement
+        if (historyEntryCollapseButton && hasOutput) {
+            historyEntryCollapseButton.style.display = "block"
         }
     }
 }
@@ -233,6 +241,8 @@ function stopHistoryEntry(entryDiv: HTMLDivElement) {
 
 function addCommandToHistory(response: any, status: string) {
     let running = (status == "start" || status == "continue")
+    let output = response.output
+    let hideOutput = output.length == 0
     let historyEntryDiv: HTMLDivElement = document.createElement("div")
     historyEntryDiv.className = "historyEntry"
     historyEntryDiv.dataset.running = running ? "True" : "False"
@@ -253,6 +263,9 @@ function addCommandToHistory(response: any, status: string) {
     let historyEntryCollapseButton: HTMLDivElement = document.createElement("div")
     historyEntryCollapseButton.className = "historyEntryCollapseButton"
     historyEntryCollapseButton.textContent = collapseLabel
+    if (hideOutput) {
+        historyEntryCollapseButton.style.display = "none"
+    }
     historyEntryCollapseButton.addEventListener("click", () => {
         let historyEntry = historyEntryCollapseButton.closest('.historyEntry') as HTMLDivElement
         if (historyEntry) {
@@ -305,6 +318,9 @@ function addCommandToHistory(response: any, status: string) {
 
     let historyEntryOutput: HTMLDivElement = document.createElement("div")
     historyEntryOutput.className = "historyOutput"
+    if (hideOutput) {
+        historyEntryOutput.style.display = "none"
+    }
 
     let historyEntryOutputPre: HTMLPreElement = document.createElement("pre")
     historyEntryOutputPre.className = "historyOutputPre"
