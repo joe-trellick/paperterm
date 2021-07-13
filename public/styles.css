@@ -4,7 +4,6 @@
 
 .historyEntry {
     background-color: #fafaeb;
-    padding: 10px;
     border-width: 1px;
     border-color: gray;
     border-style: solid;
@@ -17,6 +16,7 @@
 
 .historyEntryTitlebar {
     display: flex;
+    padding: 10px;
     justify-content: space-between;
 }
 
@@ -45,10 +45,18 @@
     background-color: rgba(0,0,0,0.2);
 }
 
+.historyOutput {
+    max-height: 250px;
+    overflow-y: scroll;
+    border-top: 1px dotted gray;
+}
+
 .historyOutputPre {
     white-space:pre-wrap;
     word-break:break-all;
-    margin-bottom: 0px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
     font-size: 9pt;
 }
 
