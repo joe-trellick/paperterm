@@ -45,7 +45,7 @@
     background-color: rgba(0,0,0,0.2);
 }
 
-.historyEntry pre {
+.historyOutputPre {
     white-space:pre-wrap;
     word-break:break-all;
     margin-bottom: 0px;

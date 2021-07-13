@@ -115,6 +115,9 @@ function isHistoryEntryCollapsed(entryDiv: HTMLDivElement) {
 function outputDivForHistoryEntry(entryDiv: HTMLDivElement) {
     return entryDiv.querySelector('.historyOutput') as HTMLDivElement
 }
+function outputPreForHistoryEntry(entryDiv: HTMLDivElement) {
+    return entryDiv.querySelector('.historyOutputPre') as HTMLPreElement
+}
 
 function setHistoryEntryCollapsed(entryDiv: HTMLDivElement, collapsed: boolean) {
     let outputDiv = outputDivForHistoryEntry(entryDiv)
@@ -188,9 +191,9 @@ function continueCommand(response: any) {
     let historyId = response.historyId
     let entryDiv = findHistoryDivForHistoryId(historyId)
     if (entryDiv) {
-        let outputDiv = outputDivForHistoryEntry(entryDiv)
-        if (outputDiv) {
-            outputDiv.textContent = outputDiv.textContent + response.output
+        let outputPre = outputPreForHistoryEntry(entryDiv)
+        if (outputPre) {
+            outputPre.textContent = outputPre.textContent + response.output
         }
     }
 }
@@ -252,9 +255,12 @@ function addCommandToHistory(response: any) {
         }
     })
 
-   let historyEntryOutput: HTMLPreElement = document.createElement("pre")
+    let historyEntryOutput: HTMLDivElement = document.createElement("div")
     historyEntryOutput.className = "historyOutput"
-    historyEntryOutput.textContent = response.output
+
+    let historyEntryOutputPre: HTMLPreElement = document.createElement("pre")
+    historyEntryOutputPre.className = "historyOutputPre"
+    historyEntryOutputPre.textContent = response.output
 
     historyEntryDiv.appendChild(historyEntryTitlebarDiv)
     historyEntryTitlebarDiv.appendChild(historyEntryTitle)
@@ -264,6 +270,7 @@ function addCommandToHistory(response: any) {
     historyEntryButtons.appendChild(historyEntryPinButton)
     historyEntryButtons.appendChild(historyEntryTrashButton)
     historyEntryDiv.appendChild(historyEntryOutput)
+    historyEntryOutput.appendChild(historyEntryOutputPre)
 
     let previousEntry = historyDiv.children[0] as HTMLDivElement
     if (previousEntry) {
