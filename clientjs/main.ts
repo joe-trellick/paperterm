@@ -194,6 +194,12 @@ function continueCommand(response: any) {
         let outputPre = outputPreForHistoryEntry(entryDiv)
         if (outputPre) {
             outputPre.textContent = outputPre.textContent + response.output
+            // Make sure to scroll to show added stuff
+            // TODO: Make this more nuanced to not do this if the user has scrolled back up?
+            let outputDiv = outputDivForHistoryEntry(entryDiv)
+            if (outputDiv) {
+                outputDiv.scrollTop = outputDiv.scrollHeight
+            }
         }
     }
 }
