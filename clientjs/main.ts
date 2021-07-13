@@ -237,6 +237,7 @@ function endCommand(response: any) {
 }
 
 function updateHistoryEntryOnCommandEnd(entryDiv: HTMLDivElement) {
+    entryDiv.dataset.running = "False"
     let buttonDiv = entryDiv.querySelector('.historyEntryStopButton') as HTMLDivElement
     if (buttonDiv) {
         buttonDiv.style.display = "none"
@@ -248,8 +249,10 @@ function stopHistoryEntry(entryDiv: HTMLDivElement) {
 }
 
 function addCommandToHistory(response: any, status: string) {
+    let running = (status == "start" || status == "continue")
     let historyEntryDiv: HTMLDivElement = document.createElement("div")
     historyEntryDiv.className = "historyEntry"
+    historyEntryDiv.dataset.running = running ? "True" : "False"
     if (response.historyId) {
         historyEntryDiv.dataset.historyId = response.historyId
     }
@@ -307,7 +310,7 @@ function addCommandToHistory(response: any, status: string) {
     let stopButton: HTMLDivElement = document.createElement("div")
     stopButton.className = "historyEntryStopButton"
     stopButton.textContent = "stop"
-    if (status == "end") {
+    if (!running) {
         stopButton.style.display = "none"
     }
     stopButton.addEventListener("click", () => {
