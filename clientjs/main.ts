@@ -45,6 +45,10 @@ function sendCurrentInput() {
     inputField.value = ''
     sendCommandByWebSocket(input)
 }
+// Put into global scope for onclick handler in HTML, Webpack requires this
+// You can extend the Window type to do this more cleanly:
+// https://stackoverflow.com/questions/12709074/how-do-you-explicitly-set-a-new-property-on-window-in-typescript
+(window as any).sendCurrentInput = sendCurrentInput
 
 function sendCommand(input: string) {
     console.log(`The input is "${input}"`);
