@@ -50,27 +50,6 @@ function sendCurrentInput() {
 // https://stackoverflow.com/questions/12709074/how-do-you-explicitly-set-a-new-property-on-window-in-typescript
 (window as any).sendCurrentInput = sendCurrentInput
 
-function sendCommand(input: string) {
-    console.log(`The input is "${input}"`)
-    fetch('/command', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({command: input})
-    })
-    .then((response) => response.json())
-    .then((data) => {
-        console.log(`Response: ${JSON.stringify(data)}`)
-        if (data.command) {
-            addCommandToHistory(data, "end")
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error)
-    })
-}
-
 var ws: WebSocket
 function sendCommandByWebSocket(input: string) {
     if (ws) {
@@ -184,8 +163,8 @@ function rerunHistoryEntry(entryDiv: HTMLDivElement) {
     let commandDiv = entryDiv.querySelector('.historyCommand')
     let commandText = commandDiv?.textContent?.substring(2)  // TODO: Use a real data representation here
     if (commandText) {
-        sendCommand(commandText)
         inputField.value = commandText
+        sendCommandByWebSocket(commandText)
     }
 }
 
