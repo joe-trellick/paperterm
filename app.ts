@@ -47,8 +47,6 @@ wss.on('connection', (ws: WebSocket) => {
                 runningCommand = child.exec(command, options)
                 runningCommand.stdout?.on('data', (data: any) => {
                     console.log("Got data output", data.toString())
-                    let pwd = child.execSync('lsof -a -d cwd -p ' + runningCommand.pid + ' | tail -1 | awk \'{print $9}\'').toString()
-                    console.log(`PWD is ${pwd}`)
                     ws.send(JSON.stringify({status: "continue", command: command, historyId: historyId, output: data.toString()}))
                 })
                 runningCommand.stderr?.on('data', (data: any) => {
@@ -57,9 +55,6 @@ wss.on('connection', (ws: WebSocket) => {
                 })
                 runningCommand.stdout?.on('end', (code: any) => {
                     console.log(`Got command end: "${code}"`)
-                    console.log(`PID is ${runningCommand.pid}`)
-                    let pwd = child.execSync('lsof -a -d cwd -p ' + runningCommand.pid + ' | tail -1 | awk \'{print $9}\'').toString()
-                        console.log(`PWD is ${pwd}`)
                     ws.send(JSON.stringify({status: "end", command: command, historyId: historyId,}))
                 })
 
