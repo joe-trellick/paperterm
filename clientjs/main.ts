@@ -169,6 +169,15 @@ function pinHistoryEntry(entryDiv: HTMLDivElement) {
             removeHistoryEntry(historyEntry)
         }
     })
+
+    let stopButton = pinnedEntryDiv.querySelector('.historyEntryStopButton')
+    stopButton?.addEventListener("click", () => {
+        let historyEntry = stopButton?.closest('.historyEntry') as HTMLDivElement
+        if (historyEntry) {
+            stopHistoryEntry(historyEntry)
+        }
+    })
+
     
     let historyEntryTrashButton = pinnedEntryDiv.querySelector('.historyEntryTrashButton')
     historyEntryTrashButton?.remove()
