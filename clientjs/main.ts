@@ -51,19 +51,19 @@ function sendCurrentInput() {
 (window as any).sendCurrentInput = sendCurrentInput
 
 var ws: WebSocket
+var pendingCommands: string[] = new Array()
 function sendCommandByWebSocket(input: string) {
-    // if (ws) {
-    //     ws.close()
-    // }
+    pendingCommands.push(JSON.stringify({action: "start", command: input}))
+
     if (!ws) {
         ws = new WebSocket('ws://localhost:3000')
     }
 
     if (ws.readyState === WebSocket.OPEN) {
-        let body = JSON.stringify({action: "start", command: input})
-        ws.send(body)
-    } else {
-        console.log("Not open!")
+        while (pendingCommands.length > 0) {
+            let command = pendingCommands.shift()
+            ws.send(command)
+        }
     }
 
     ws.onmessage = function message(event: WebSocket.MessageEvent) {
@@ -98,8 +98,10 @@ function sendCommandByWebSocket(input: string) {
 
     ws.onopen = function open() {
         console.log('Websocket connected')
-        let body = JSON.stringify({action: "start", command: input})
-        ws.send(body)
+        while (pendingCommands.length > 0) {
+            let command = pendingCommands.shift()
+            ws.send(command)
+        }
     }
 }
 
