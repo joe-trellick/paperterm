@@ -52,10 +52,20 @@ function sendCurrentInput() {
 
 var ws: WebSocket
 function sendCommandByWebSocket(input: string) {
-    if (ws) {
-        ws.close()
+    // if (ws) {
+    //     ws.close()
+    // }
+    if (!ws) {
+        ws = new WebSocket('ws://localhost:3000')
     }
-    ws = new WebSocket('ws://localhost:3000')
+
+    if (ws.readyState === WebSocket.OPEN) {
+        let body = JSON.stringify({action: "start", command: input})
+        ws.send(body)
+    } else {
+        console.log("Not open!")
+    }
+
     ws.onmessage = function message(event: WebSocket.MessageEvent) {
         if (event.data) {
             var parsedMessage
