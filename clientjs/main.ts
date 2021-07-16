@@ -50,7 +50,7 @@ function sendCurrentInput() {
 // https://stackoverflow.com/questions/12709074/how-do-you-explicitly-set-a-new-property-on-window-in-typescript
 (window as any).sendCurrentInput = sendCurrentInput
 
-var ws: WebSocket
+var ws: WebSocket | null
 var pendingCommands: string[] = new Array()
 function sendCommandByWebSocket(input: string) {
     pendingCommands.push(JSON.stringify({action: "start", command: input}))
@@ -62,7 +62,7 @@ function sendCommandByWebSocket(input: string) {
     if (ws.readyState === WebSocket.OPEN) {
         while (pendingCommands.length > 0) {
             let command = pendingCommands.shift()
-            ws.send(command)
+            ws?.send(command)
         }
     }
 
@@ -100,8 +100,13 @@ function sendCommandByWebSocket(input: string) {
         console.log('Websocket connected')
         while (pendingCommands.length > 0) {
             let command = pendingCommands.shift()
-            ws.send(command)
+            ws?.send(command)
         }
+    }
+
+    ws.onclose = function() {
+        console.log('Websocket disconnected')
+        ws = null
     }
 }
 
