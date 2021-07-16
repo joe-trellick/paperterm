@@ -210,13 +210,14 @@ function continueCommand(response: any) {
 function appendOutputToEntryDiv(entryDiv: HTMLDivElement, continuedOutput: string) {
     let outputPre = outputPreForHistoryEntry(entryDiv)
     if (outputPre) {
+        let previouslyHadOutput = outputPre.textContent!.length > 0
         outputPre.textContent = outputPre.textContent + continuedOutput
         let hasOutput = outputPre.textContent.length > 0
         // Make sure to scroll to show added stuff
         // TODO: Make this more nuanced to not do this if the user has scrolled back up?
         let outputDiv = outputDivForHistoryEntry(entryDiv)
         if (outputDiv) {
-            if (hasOutput) {
+            if (hasOutput && !previouslyHadOutput) {
                 outputDiv.style.display = "block"
             }
             outputDiv.scrollTop = outputDiv.scrollHeight
@@ -249,7 +250,7 @@ function updateHistoryEntryOnCommandEnd(entryDiv: HTMLDivElement) {
 }
 
 function stopHistoryEntry(entryDiv: HTMLDivElement) {
-    // TODO: Deal with multiple simultaneous commands
+    // TODO: Deal with multiple simultaneous commands; reconnect ws if necessary
     if (ws) {
         let body = JSON.stringify({action: "stop", historyId: entryDiv.dataset.historyId})
         ws.send(body)
