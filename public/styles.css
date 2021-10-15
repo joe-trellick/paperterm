@@ -35,6 +35,110 @@
 .historyCommand {
     font-family: "Courier New", monspace;
     font-weight: bold;
+    word-break:break-all;
+}
+
+.historyButtons {
+    margin-left: 5px;
+    display: flex;
+    gap: 4px;
+}
+
+.historyButtons div {
+    font-family: sans-serif;
+    font-size: 8pt;
+    border-style: dashed;
+    border-width: 1px;
+    padding: 2px;
+    user-select: none;
+    align-self: flex-start
+}
+
+.historyButtons div:hover {
+    background-color: rgba(0,0,0,0.2);
+}
+
+.historyOutput {
+    max-height: 250px;
+    overflow-y: scroll;
+    border-top: 1px dotted gray;
+}
+
+.historyOutputPre {
+    white-space:pre-wrap;
+    word-break:break-all;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 9pt;
+}
+
+#main {
+    margin-right: 350px;
+}
+
+#pinbar {
+    height: 100%;
+    width: 350px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    overflow-x: hidden;
+    padding-top: 5px;
+    padding-right: 5px;
+}a#history {
+    max-width: 600px;
+}
+
+.historyEntry {
+    background-color: #fafaeb;
+    border-width: 1px;
+    border-color: gray;
+    border-style: solid;
+    margin-bottom: 5px;
+}
+
+#history > .historyEntry:first-child {
+    background-color: #f7f77c;
+}
+
+[data-running="True"] > .historyEntryTitlebar {
+	background: linear-gradient(-45deg, transparent 25%, #00000010 25%, #00000010 50%, transparent 50%, transparent 75%, #00000010 75%);
+	background-size: 27px 27px;
+    animation: barberpole 10s infinite linear;
+
+}
+
+@-webkit-keyframes barberpole {
+    from {background-position: 0%;}
+    to {background-position: 100%;}
+}
+
+.historyEntryTitlebar {
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+}
+
+.titleRight {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.timeText {
+    font-family: sans-serif;
+    text-align: right;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.historyCommand {
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    word-break:break-all;
 }
 
 .historyButtons {

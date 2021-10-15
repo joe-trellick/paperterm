@@ -36,7 +36,7 @@ wss.on('connection', (ws: WebSocket) => {
                 let options: child.ExecSyncOptionsWithBufferEncoding = {
                     stdio: 'pipe'  // This suppresses server console prints, per https://stackoverflow.com/questions/25340875/nodejs-child-process-exec-disable-printing-of-stdout-on-console/45578119
                 }
-                ws.send(JSON.stringify({status: "start", command: command, historyId: historyId, output: ""}))
+                ws.send(JSON.stringify({status: "start", command: command, historyId: historyId, output: "", startTime: Date.now() }))
 
                 let runningCommand = child.exec(command, options)
                 processMap.set(historyId, runningCommand)

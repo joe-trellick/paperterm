@@ -269,6 +269,7 @@ function stopHistoryEntry(entryDiv: HTMLDivElement) {
 function addCommandToHistory(response: any, status: string) {
     let running = (status == "start" || status == "continue")
     let output = response.output
+    let startTime = response.startTime ? new Date(response.startTime) : null
     let hideOutput = output.length == 0
     let historyEntryDiv: HTMLDivElement = document.createElement("div")
     historyEntryDiv.className = "historyEntry"
@@ -283,6 +284,13 @@ function addCommandToHistory(response: any, status: string) {
     let historyEntryTitle: HTMLDivElement = document.createElement("div")
     historyEntryTitle.className = "historyCommand"
     historyEntryTitle.textContent = `% ${response.command}`
+
+    let historyEntryTitleRightContainer: HTMLDivElement = document.createElement("div")
+    historyEntryTitleRightContainer.className = "titleRight"
+
+    let historyEntryTimeText: HTMLDivElement = document.createElement("div")
+    historyEntryTimeText.className = "timeText"
+    historyEntryTimeText.textContent = startTime?.toLocaleString()
 
     let historyEntryButtons: HTMLDivElement = document.createElement("div")
     historyEntryButtons.className = "historyButtons"
@@ -355,7 +363,9 @@ function addCommandToHistory(response: any, status: string) {
 
     historyEntryDiv.appendChild(historyEntryTitlebarDiv)
     historyEntryTitlebarDiv.appendChild(historyEntryTitle)
-    historyEntryTitlebarDiv.appendChild(historyEntryButtons)
+    historyEntryTitlebarDiv.appendChild(historyEntryTitleRightContainer)
+    historyEntryTitleRightContainer.appendChild(historyEntryButtons)
+    historyEntryTitleRightContainer.appendChild(historyEntryTimeText)
     historyEntryButtons.appendChild(stopButton)
     historyEntryButtons.appendChild(historyEntryCollapseButton)
     historyEntryButtons.appendChild(historyEntryRerunButton)
